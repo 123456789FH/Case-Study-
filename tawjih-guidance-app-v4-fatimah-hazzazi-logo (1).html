@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>نظام التوجيه الطلابي - برمجة أ. فاطمة هزازي</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Tahoma", system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background: #f3f4f6;
+      color: #111827;
+      padding: 20px;
+    }
+
+    .app {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 20px 20px 30px;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+    }
+
+    header {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 24px;
+      margin-bottom: 6px;
+      color: #111827;
+    }
+
+    header p {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 4px;
+    }
+
+    header .credit {
+      font-size: 12px;
+      color: #4b5563;
+      font-weight: 600;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 20px 0;
+      justify-content: center;
+    }
+
+    .nav-btn {
+      border: none;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      color: #111827;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .nav-btn.active {
+      background: #2563eb;
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+    }
+
+    .nav-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    main {
+      margin-top: 10px;
+    }
+
+    .section {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      background: #f9fafb;
+      border-radius: 14px;
+      padding: 16px 16px 20px;
+      margin-bottom: 18px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .card h2 {
+      font-size: 17px;
+      margin-bottom: 10px;
+      color: #111827;
+    }
+
+    .card p.helper {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 12px;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px 16px;
+      align-items: flex-start;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 13px;
+    }
+
+    label {
+      font-weight: 600;
+      color: #374151;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="number"],
+    select,
+    textarea {
+      padding: 7px 8px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 13px;
+      outline: none;
+      background: #ffffff;
+    }
+
+    textarea {
+      min-height: 70px;
+      resize: vertical;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2);
+    }
+
+    .form-actions {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: flex-start;
+      gap: 8px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      padding: 8px 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: #ffffff;
+    }
+
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .btn-danger {
+      background: #dc2626;
+      color: #ffffff;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+    }
+
+    .btn:hover {
+      opacity: 0.95;
+      transform: translateY(-0.5px);
+    }
+
+    .table-wrapper {
+      margin-top: 10px;
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 650px;
+      font-size: 12px;
+    }
+
+    thead {
+      background: #f3f4f6;
+    }
+
+    th,
+    td {
+      padding: 8px 10px;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: right;
+      vertical-align: top;
+    }
+
+    th {
+      font-weight: 700;
+      color: #374151;
+      white-space: nowrap;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .badge {
+      display: inline-flex;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: #eef2ff;
+      color: #4f46e5;
+    }
+
+    .empty {
+      font-size: 12px;
+      color: #6b7280;
+      padding: 10px 6px;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #111827;
+    }
+
+    .hint {
+      font-size: 11px;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    .print-hide {
+      /* عناصر لا تظهر في وضع الطباعة */
+    }
+
+    .footer-credit {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .footer-credit span {
+      font-weight: 600;
+      color: #111827;
+    }
+
+    @media (max-width: 640px) {
+      .app {
+        padding: 14px;
+      }
+
+      header h1 {
+        font-size: 19px;
+      }
+
+      table {
+        min-width: 550px;
+      }
+    }
+
+    /* تنسيق خاص عند الطباعة */
+    @media print {
+      body.printing {
+        background: #ffffff;
+        padding: 0;
+      }
+
+      body.printing .app {
+        box-shadow: none;
+        border-radius: 0;
+        max-width: 100%;
+        margin: 0;
+      }
+
+      body.printing nav,
+      body.printing header,
+      body.printing .print-hide,
+      body.printing .footer-credit {
+        display: none !important;
+      }
+
+      body.printing .section {
+        display: none !important;
+      }
+
+      body.printing .section.print-target {
+        display: block !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="print-hide">
+            <img src="logo-fatimah-hazzazi.png" alt="شعار أ. فاطمة هزازي" style="height:80px; margin:0 auto 10px; display:block;" />
+<h1>نظام التوجيه الطلابي</h1>
+      <p>إدارة دراسة الحالات، الخطط العلاجية، والتقارير الشهرية والختامية (مناسب للطلاب والطالبات)</p>
+      <div class="credit">برمجة / أ- فاطمة هزازي</div>
+    </header>
+
+    <nav class="print-hide">
+      <button class="nav-btn active" data-section="casesSection">دراسة حالة</button>
+      <button class="nav-btn" data-section="plansSection">خطة علاجية</button>
+      <button class="nav-btn" data-section="monthlySection">تقرير شهري</button>
+      <button class="nav-btn" data-section="finalSection">تقرير ختامي</button>
+    </nav>
+
+    <main>
+      <!-- قسم دراسة حالة -->
+      <section id="casesSection" class="section active">
+        <div class="card">
+          <h2>إضافة / تسجيل دراسة حالة طالب / طالبة</h2>
+          <p class="helper">املأ/املئي البيانات التالية لكل حالة يتم إحالتها لك، وسيتم حفظها في المتصفح تلقائيًا.</p>
+
+          <form id="caseForm">
+            <div class="form-group">
+              <label>اسم الطالب / الطالبة</label>
+              <input type="text" id="caseStudentName" required />
+            </div>
+
+            <div class="form-group">
+              <label>الصف / الشعبة</label>
+              <input type="text" id="caseClass" placeholder="مثال: 4/ب أو ثالث متوسط 2" />
+            </div>
+
+            <div class="form-group">
+              <label>تاريخ دراسة الحالة</label>
+              <input type="date" id="caseDate" />
+            </div>
+
+            <div class="form-group">
+              <label>الجهة المحيلة</label>
+              <select id="caseReferrer">
+                <option value="">-- اختر/ي --</option>
+                <option value="معلم/ة">معلم/ة</option>
+                <option value="إدارة المدرسة">إدارة المدرسة</option>
+                <option value="ولي أمر">ولي أمر</option>
+                <option value="الطالب/ـة نفسه/ها">الطالب/ـة نفسه/ها</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>نوع المشكلة</label>
+              <select id="caseProblemType">
+                <option value="">-- اختر/ي --</option>
+                <option value="سلوكية">سلوكية</option>
+                <option value="تحصيلية">تحصيلية</option>
+                <option value="غياب / تأخر">غياب / تأخر</option>
+                <option value="نفسية / انفعالية">نفسية / انفعالية</option>
+                <option value="أسرية">أسرية</option>
+                <option value="صحية">صحية</option>
+                <option value="أخرى">أخرى</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>وصف المشكلة كما وردت</label>
+              <textarea id="caseDescription" placeholder="اكتب/ي وصفًا موجزًا للحالة والموقف..."></textarea>
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>ملاحظات المرشد / المرشدة الطلابية</label>
+              <textarea id="caseNotes" placeholder="أي ملاحظات أولية أو تشخيص مبدئي..."></textarea>
+            </div>
+
+            <div class="form-actions print-hide">
+              <button type="submit" class="btn btn-primary">حفظ الحالة</button>
+              <button type="button" class="btn btn-secondary" id="clearCasesBtn">حذف كل الحالات</button>
+              <button type="button" class="btn btn-secondary" onclick="printSection('casesSection')">تصدير دراسة الحالة إلى PDF</button>
+            </div>
+          </form>
+        </div>
+
+        <div>
+          <div class="section-title">سجل الحالات المسجلة</div>
+          <p class="hint">يمكنك مراجعة الحالات وحذف أي حالة لا ترغبين بها.</p>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>اسم الطالب / الطالبة</th>
+                  <th>الصف</th>
+                  <th>التاريخ</th>
+                  <th>نوع المشكلة</th>
+                  <th>الجهة المحيلة</th>
+                  <th>وصف مختصر</th>
+                  <th class="print-hide">إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="casesTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- قسم خطة علاجية -->
+      <section id="plansSection" class="section">
+        <div class="card">
+          <h2>خطة علاجية لحالة طالب / طالبة</h2>
+          <p class="helper">اربِط/ي الخطة باسم الطالب/الطالبة ونوع المشكلة، وحدد/ي الأهداف والإجراءات.</p>
+
+          <form id="planForm">
+            <div class="form-group">
+              <label>اسم الطالب / الطالبة</label>
+              <input type="text" id="planStudentName" required />
+            </div>
+
+            <div class="form-group">
+              <label>نوع المشكلة</label>
+              <select id="planProblemType">
+                <option value="">-- اختر/ي --</option>
+                <option value="سلوكية">سلوكية</option>
+                <option value="تحصيلية">تحصيلية</option>
+                <option value="غياب / تأخر">غياب / تأخر</option>
+                <option value="نفسية / انفعالية">نفسية / انفعالية</option>
+                <option value="أسرية">أسرية</option>
+                <option value="صحية">صحية</option>
+                <option value="أخرى">أخرى</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>تاريخ بداية الخطة</label>
+              <input type="date" id="planStartDate" />
+            </div>
+
+            <div class="form-group">
+              <label>تاريخ نهاية الخطة (تقديري)</label>
+              <input type="date" id="planEndDate" />
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>الهدف العام</label>
+              <textarea id="planMainGoal" placeholder="مثال: خفض عدد الغيابات وتحسين الالتزام بالحضور..."></textarea>
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>الأهداف الفرعية</label>
+              <textarea id="planSubGoals" placeholder="اكتُب/ي الأهداف الفرعية، كل هدف في سطر إن رغبتِ..."></textarea>
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>الإجراءات العلاجية</label>
+              <textarea id="planActions" placeholder="جلسات إرشاد فردية، تواصل مع ولي الأمر، برنامج تعزيز، متابعة مع المعلم/ة..."></textarea>
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>خطة المتابعة والتقييم</label>
+              <textarea id="planFollowup" placeholder="كيف سيتم قياس التحسن؟ عدد الجلسات، المدة، مؤشرات التقدم..."></textarea>
+            </div>
+
+            <div class="form-actions print-hide">
+              <button type="submit" class="btn btn-primary">حفظ الخطة</button>
+              <button type="button" class="btn btn-secondary" id="clearPlansBtn">حذف كل الخطط</button>
+              <button type="button" class="btn btn-secondary" onclick="printSection('plansSection')">تصدير الخطة العلاجية إلى PDF</button>
+            </div>
+          </form>
+        </div>
+
+        <div>
+          <div class="section-title">الخطط العلاجية المسجلة</div>
+          <p class="hint">عرض سريع لأهم بيانات الخطة لكل طالب/طالبة.</p>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>اسم الطالب / الطالبة</th>
+                  <th>نوع المشكلة</th>
+                  <th>بداية الخطة</th>
+                  <th>نهاية الخطة</th>
+                  <th>الهدف العام</th>
+                  <th class="print-hide">إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="plansTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- قسم تقرير شهري -->
+      <section id="monthlySection" class="section">
+        <div class="card">
+          <h2>تقرير شهري للمرشد / المرشدة الطلابية</h2>
+          <p class="helper">سجّل/ي ملخص الشهر (الإحصاءات + البرامج المنفذة + الملاحظات والتوصيات).</p>
+
+          <form id="monthlyForm">
+            <div class="form-group">
+              <label>اسم المدرسة</label>
+              <input type="text" id="monthlySchoolName" />
+            </div>
+
+            <div class="form-group">
+              <label>اسم المرشد / المرشدة الطلابية</label>
+              <input type="text" id="monthlyCounselorName" />
+            </div>
+
+            <div class="form-group">
+              <label>الشهر</label>
+              <input type="text" id="monthlyMonth" placeholder="مثال: ربيع الأول 1447 هـ" />
+            </div>
+
+            <div class="form-group">
+              <label>العام</label>
+              <input type="text" id="monthlyYear" placeholder="مثال: 1447 هـ / 2025 م" />
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>إحصائية موجزة للحالات</label>
+              <textarea id="monthlyStats" placeholder="مثال: عدد الحالات السلوكية، التحصيلية، الغياب..."></textarea>
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>البرامج / الأنشطة المنفذة خلال الشهر</label>
+              <textarea id="monthlyPrograms" placeholder="برامج وقائية، ورش عمل، إذاعات مدرسية..."></textarea>
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>ملاحظات عامة وتوصيات</label>
+              <textarea id="monthlyNotes" placeholder="أي ملاحظات على سلوك الطلاب والطالبات، الغياب، تعاون أولياء الأمور..."></textarea>
+            </div>
+
+            <div class="form-actions print-hide">
+              <button type="submit" class="btn btn-primary">حفظ التقرير الشهري</button>
+              <button type="button" class="btn btn-secondary" id="clearMonthlyBtn">حذف جميع التقارير الشهرية</button>
+              <button type="button" class="btn btn-secondary" onclick="printSection('monthlySection')">تصدير التقرير الشهري إلى PDF</button>
+            </div>
+          </form>
+        </div>
+
+        <div>
+          <div class="section-title">التقارير الشهرية المحفوظة</div>
+          <p class="hint">يمكن الرجوع لأي شهر والاطلاع على ملخصه.</p>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>الشهر</th>
+                  <th>العام</th>
+                  <th>اسم المدرسة</th>
+                  <th>اسم المرشد/ة</th>
+                  <th>ملخص الإحصاءات</th>
+                  <th class="print-hide">إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="monthlyTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- قسم تقرير ختامي -->
+      <section id="finalSection" class="section">
+        <div class="card">
+          <h2>تقرير ختامي (فصلي / سنوي)</h2>
+          <p class="helper">لخّص/ي عملك خلال فصل دراسي كامل أو عام دراسي.</p>
+
+          <form id="finalForm">
+            <div class="form-group">
+              <label>اسم المدرسة</label>
+              <input type="text" id="finalSchoolName" />
+            </div>
+
+            <div class="form-group">
+              <label>اسم المرشد / المرشدة الطلابية</label>
+              <input type="text" id="finalCounselorName" />
+            </div>
+
+            <div class="form-group">
+              <label>نوع التقرير</label>
+              <select id="finalType">
+                <option value="">-- اختر/ي --</option>
+                <option value="فصلي">فصلي</option>
+                <option value="سنوي">سنوي</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>الفترة من</label>
+              <input type="text" id="finalFrom" placeholder="مثال: بداية الفصل الأول 1447 هـ" />
+            </div>
+
+            <div class="form-group">
+              <label>إلى</label>
+              <input type="text" id="finalTo" placeholder="مثال: نهاية الفصل الأول 1447 هـ" />
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>إجمالي الحالات / الإحصاءات العامة</label>
+              <textarea id="finalStats" placeholder="ملخص إجمالي للحالات وأنواعها خلال الفترة..."></textarea>
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>البرامج والأنشطة المنفذة</label>
+              <textarea id="finalPrograms" placeholder="برامج علاجية، وقائية، توعوية..."></textarea>
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>أبرز النجاحات والإنجازات</label>
+              <textarea id="finalSuccess" placeholder="قصص نجاح، تحسن ملحوظ في الغياب أو السلوك أو التحصيل..."></textarea>
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>الصعوبات والتحديات</label>
+              <textarea id="finalChallenges" placeholder="صعوبات في الوقت، الإمكانيات، تعاون بعض الأسر..."></textarea>
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1%;">
+              <label>التوصيات للفترة القادمة</label>
+              <textarea id="finalRecommendations" placeholder="مقترحات لتحسين العمل في الفصل/العام القادم..."></textarea>
+            </div>
+
+            <div class="form-actions print-hide">
+              <button type="submit" class="btn btn-primary">حفظ التقرير الختامي</button>
+              <button type="button" class="btn btn-secondary" id="clearFinalBtn">حذف جميع التقارير الختامية</button>
+              <button type="button" class="btn btn-secondary" onclick="printSection('finalSection')">تصدير التقرير الختامي إلى PDF</button>
+            </div>
+          </form>
+        </div>
+
+        <div>
+          <div class="section-title">التقارير الختامية المحفوظة</div>
+          <p class="hint">يمكن الرجوع لأي تقرير ونسخ محتواه إلى Word أو طباعته.</p>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>نوع التقرير</th>
+                  <th>الفترة</th>
+                  <th>اسم المدرسة</th>
+                  <th>اسم المرشد/ة</th>
+                  <th>ملخص عام</th>
+                  <th class="print-hide">إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="finalTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="footer-credit print-hide">
+      جميع الحقوق محفوظة &copy; <span>برمجة / أ- فاطمة هزازي</span>
+    </div>
+  </div>
+
+  <script>
+    // مفاتيح التخزين
+    const STORAGE_KEYS = {
+      cases: "guidance_cases",
+      plans: "guidance_plans",
+      monthly: "guidance_monthly_reports",
+      final: "guidance_final_reports",
+    };
+
+    // تحميل / حفظ من وإلى التخزين المحلي
+    function loadData(key) {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        console.error("Error loading data", e);
+        return [];
+      }
+    }
+
+    function saveData(key, data) {
+      try {
+        localStorage.setItem(key, JSON.stringify(data));
+      } catch (e) {
+        console.error("Error saving data", e);
+      }
+    }
+
+    // دالة طباعة قسم محدد (لتصدير PDF)
+    function printSection(sectionId) {
+      const target = document.getElementById(sectionId);
+      if (!target) return;
+
+      // ضع علامة على القسم المراد طباعته
+      document.querySelectorAll(".section").forEach(sec => {
+        sec.classList.remove("print-target");
+      });
+      target.classList.add("print-target");
+
+      document.body.classList.add("printing");
+      window.print();
+      document.body.classList.remove("printing");
+      target.classList.remove("print-target");
+    }
+
+    // التنقل بين الأقسام
+    const navButtons = document.querySelectorAll(".nav-btn");
+    const sections = document.querySelectorAll(".section");
+
+    navButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const target = btn.getAttribute("data-section");
+
+        navButtons.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        sections.forEach((sec) => {
+          sec.classList.toggle("active", sec.id === target);
+        });
+      });
+    });
+
+    // ================== قسم دراسة الحالات ==================
+    let cases = loadData(STORAGE_KEYS.cases);
+
+    const caseForm = document.getElementById("caseForm");
+    const casesTableBody = document.getElementById("casesTableBody");
+    const clearCasesBtn = document.getElementById("clearCasesBtn");
+
+    function renderCases() {
+      casesTableBody.innerHTML = "";
+      if (cases.length === 0) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 7;
+        td.className = "empty";
+        td.textContent = "لا توجد حالات مسجلة حتى الآن.";
+        tr.appendChild(td);
+        casesTableBody.appendChild(tr);
+        return;
+      }
+
+      cases.forEach((c) => {
+        const tr = document.createElement("tr");
+
+        const shortDesc =
+          c.description && c.description.length > 60
+            ? c.description.substring(0, 60) + "..."
+            : c.description || "";
+
+        tr.innerHTML = `
+          <td>${c.studentName || ""}</td>
+          <td>${c.className || ""}</td>
+          <td>${c.date || ""}</td>
+          <td><span class="badge">${c.problemType || "غير محدد"}</span></td>
+          <td>${c.referrer || ""}</td>
+          <td>${shortDesc}</td>
+          <td class="print-hide"><button class="btn-danger" data-id="${c.id}" data-type="caseDelete">حذف</button></td>
+        `;
+
+        casesTableBody.appendChild(tr);
+      });
+    }
+
+    caseForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const studentName = document.getElementById("caseStudentName").value.trim();
+      if (!studentName) {
+        alert("من فضلك أدخل/أدخلي اسم الطالب/الطالبة.");
+        return;
+      }
+
+      const newCase = {
+        id: Date.now().toString(),
+        studentName,
+        className: document.getElementById("caseClass").value.trim(),
+        date: document.getElementById("caseDate").value,
+        referrer: document.getElementById("caseReferrer").value,
+        problemType: document.getElementById("caseProblemType").value,
+        description: document.getElementById("caseDescription").value.trim(),
+        notes: document.getElementById("caseNotes").value.trim(),
+      };
+
+      cases.push(newCase);
+      saveData(STORAGE_KEYS.cases, cases);
+      caseForm.reset();
+      renderCases();
+      alert("تم حفظ الحالة بنجاح ✔");
+    });
+
+    casesTableBody.addEventListener("click", (e) => {
+      const btn = e.target;
+      if (btn.matches("[data-type='caseDelete']")) {
+        const id = btn.getAttribute("data-id");
+        if (confirm("هل أنت متأكد/ة من حذف هذه الحالة؟")) {
+          cases = cases.filter((c) => c.id !== id);
+          saveData(STORAGE_KEYS.cases, cases);
+          renderCases();
+        }
+      }
+    });
+
+    clearCasesBtn.addEventListener("click", () => {
+      if (cases.length === 0) return;
+      if (confirm("سيتم حذف جميع الحالات المسجلة، هل أنت متأكد/ة؟")) {
+        cases = [];
+        saveData(STORAGE_KEYS.cases, cases);
+        renderCases();
+      }
+    });
+
+    // ================== قسم الخطط العلاجية ==================
+    let plans = loadData(STORAGE_KEYS.plans);
+
+    const planForm = document.getElementById("planForm");
+    const plansTableBody = document.getElementById("plansTableBody");
+    const clearPlansBtn = document.getElementById("clearPlansBtn");
+
+    function renderPlans() {
+      plansTableBody.innerHTML = "";
+      if (plans.length === 0) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 6;
+        td.className = "empty";
+        td.textContent = "لا توجد خطط علاجية مسجلة حتى الآن.";
+        tr.appendChild(td);
+        plansTableBody.appendChild(tr);
+        return;
+      }
+
+      plans.forEach((p) => {
+        const shortGoal =
+          p.mainGoal && p.mainGoal.length > 50
+            ? p.mainGoal.substring(0, 50) + "..."
+            : p.mainGoal || "";
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${p.studentName || ""}</td>
+          <td><span class="badge">${p.problemType || "غير محدد"}</span></td>
+          <td>${p.startDate || ""}</td>
+          <td>${p.endDate || ""}</td>
+          <td>${shortGoal}</td>
+          <td class="print-hide"><button class="btn-danger" data-id="${p.id}" data-type="planDelete">حذف</button></td>
+        `;
+        plansTableBody.appendChild(tr);
+      });
+    }
+
+    planForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const studentName = document.getElementById("planStudentName").value.trim();
+      if (!studentName) {
+        alert("من فضلك أدخل/أدخلي اسم الطالب/الطالبة للخطة العلاجية.");
+        return;
+      }
+
+      const newPlan = {
+        id: Date.now().toString(),
+        studentName,
+        problemType: document.getElementById("planProblemType").value,
+        startDate: document.getElementById("planStartDate").value,
+        endDate: document.getElementById("planEndDate").value,
+        mainGoal: document.getElementById("planMainGoal").value.trim(),
+        subGoals: document.getElementById("planSubGoals").value.trim(),
+        actions: document.getElementById("planActions").value.trim(),
+        followup: document.getElementById("planFollowup").value.trim(),
+      };
+
+      plans.push(newPlan);
+      saveData(STORAGE_KEYS.plans, plans);
+      planForm.reset();
+      renderPlans();
+      alert("تم حفظ الخطة العلاجية بنجاح ✔");
+    });
+
+    plansTableBody.addEventListener("click", (e) => {
+      const btn = e.target;
+      if (btn.matches("[data-type='planDelete']")) {
+        const id = btn.getAttribute("data-id");
+        if (confirm("هل أنت متأكد/ة من حذف هذه الخطة؟")) {
+          plans = plans.filter((p) => p.id !== id);
+          saveData(STORAGE_KEYS.plans, plans);
+          renderPlans();
+        }
+      }
+    });
+
+    clearPlansBtn.addEventListener("click", () => {
+      if (plans.length === 0) return;
+      if (confirm("سيتم حذف جميع الخطط العلاجية المسجلة، هل أنت متأكد/ة؟")) {
+        plans = [];
+        saveData(STORAGE_KEYS.plans, plans);
+        renderPlans();
+      }
+    });
+
+    // ================== التقارير الشهرية ==================
+    let monthlyReports = loadData(STORAGE_KEYS.monthly);
+
+    const monthlyForm = document.getElementById("monthlyForm");
+    const monthlyTableBody = document.getElementById("monthlyTableBody");
+    const clearMonthlyBtn = document.getElementById("clearMonthlyBtn");
+
+    function renderMonthlyReports() {
+      monthlyTableBody.innerHTML = "";
+      if (monthlyReports.length === 0) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 6;
+        td.className = "empty";
+        td.textContent = "لا توجد تقارير شهرية مسجلة حتى الآن.";
+        tr.appendChild(td);
+        monthlyTableBody.appendChild(tr);
+        return;
+      }
+
+      monthlyReports.forEach((r) => {
+        const shortStats =
+          r.stats && r.stats.length > 60
+            ? r.stats.substring(0, 60) + "..."
+            : r.stats || "";
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${r.month || ""}</td>
+          <td>${r.year || ""}</td>
+          <td>${r.schoolName || ""}</td>
+          <td>${r.counselorName || ""}</td>
+          <td>${shortStats}</td>
+          <td class="print-hide"><button class="btn-danger" data-id="${r.id}" data-type="monthlyDelete">حذف</button></td>
+        `;
+        monthlyTableBody.appendChild(tr);
+      });
+    }
+
+    monthlyForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const month = document.getElementById("monthlyMonth").value.trim();
+      if (!month) {
+        alert("من فضلك أدخل/أدخلي اسم الشهر.");
+        return;
+      }
+
+      const newReport = {
+        id: Date.now().toString(),
+        schoolName: document.getElementById("monthlySchoolName").value.trim(),
+        counselorName: document.getElementById("monthlyCounselorName").value.trim(),
+        month,
+        year: document.getElementById("monthlyYear").value.trim(),
+        stats: document.getElementById("monthlyStats").value.trim(),
+        programs: document.getElementById("monthlyPrograms").value.trim(),
+        notes: document.getElementById("monthlyNotes").value.trim(),
+      };
+
+      monthlyReports.push(newReport);
+      saveData(STORAGE_KEYS.monthly, monthlyReports);
+      monthlyForm.reset();
+      renderMonthlyReports();
+      alert("تم حفظ التقرير الشهري بنجاح ✔");
+    });
+
+    monthlyTableBody.addEventListener("click", (e) => {
+      const btn = e.target;
+      if (btn.matches("[data-type='monthlyDelete']")) {
+        const id = btn.getAttribute("data-id");
+        if (confirm("هل أنت متأكد/ة من حذف هذا التقرير الشهري؟")) {
+          monthlyReports = monthlyReports.filter((r) => r.id !== id);
+          saveData(STORAGE_KEYS.monthly, monthlyReports);
+          renderMonthlyReports();
+        }
+      }
+    });
+
+    clearMonthlyBtn.addEventListener("click", () => {
+      if (monthlyReports.length === 0) return;
+      if (confirm("سيتم حذف جميع التقارير الشهرية، هل أنت متأكد/ة؟")) {
+        monthlyReports = [];
+        saveData(STORAGE_KEYS.monthly, monthlyReports);
+        renderMonthlyReports();
+      }
+    });
+
+    // ================== التقارير الختامية ==================
+    let finalReports = loadData(STORAGE_KEYS.final);
+
+    const finalForm = document.getElementById("finalForm");
+    const finalTableBody = document.getElementById("finalTableBody");
+    const clearFinalBtn = document.getElementById("clearFinalBtn");
+
+    function renderFinalReports() {
+      finalTableBody.innerHTML = "";
+      if (finalReports.length === 0) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 6;
+        td.className = "empty";
+        td.textContent = "لا توجد تقارير ختامية مسجلة حتى الآن.";
+        tr.appendChild(td);
+        finalTableBody.appendChild(tr);
+        return;
+      }
+
+      finalReports.forEach((r) => {
+        const period = (r.from || "") && (r.to || "")
+          ? `${r.from} → ${r.to}`
+          : (r.from || "") || "";
+
+        const shortStats =
+          r.stats && r.stats.length > 60
+            ? r.stats.substring(0, 60) + "..."
+            : r.stats || "";
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><span class="badge">${r.type || ""}</span></td>
+          <td>${period}</td>
+          <td>${r.schoolName || ""}</td>
+          <td>${r.counselorName || ""}</td>
+          <td>${shortStats}</td>
+          <td class="print-hide"><button class="btn-danger" data-id="${r.id}" data-type="finalDelete">حذف</button></td>
+        `;
+        finalTableBody.appendChild(tr);
+      });
+    }
+
+    finalForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const type = document.getElementById("finalType").value;
+      if (!type) {
+        alert("من فضلك اختر/ي نوع التقرير (فصلي / سنوي).");
+        return;
+      }
+
+      const newFinal = {
+        id: Date.now().toString(),
+        schoolName: document.getElementById("finalSchoolName").value.trim(),
+        counselorName: document.getElementById("finalCounselorName").value.trim(),
+        type,
+        from: document.getElementById("finalFrom").value.trim(),
+        to: document.getElementById("finalTo").value.trim(),
+        stats: document.getElementById("finalStats").value.trim(),
+        programs: document.getElementById("finalPrograms").value.trim(),
+        success: document.getElementById("finalSuccess").value.trim(),
+        challenges: document.getElementById("finalChallenges").value.trim(),
+        recommendations: document.getElementById("finalRecommendations").value.trim(),
+      };
+
+      finalReports.push(newFinal);
+      saveData(STORAGE_KEYS.final, finalReports);
+      finalForm.reset();
+      renderFinalReports();
+      alert("تم حفظ التقرير الختامي بنجاح ✔");
+    });
+
+    finalTableBody.addEventListener("click", (e) => {
+      const btn = e.target;
+      if (btn.matches("[data-type='finalDelete']")) {
+        const id = btn.getAttribute("data-id");
+        if (confirm("هل أنت متأكد/ة من حذف هذا التقرير الختامي؟")) {
+          finalReports = finalReports.filter((r) => r.id !== id);
+          saveData(STORAGE_KEYS.final, finalReports);
+          renderFinalReports();
+        }
+      }
+    });
+
+    clearFinalBtn.addEventListener("click", () => {
+      if (finalReports.length === 0) return;
+      if (confirm("سيتم حذف جميع التقارير الختامية، هل أنت متأكد/ة؟")) {
+        finalReports = [];
+        saveData(STORAGE_KEYS.final, finalReports);
+        renderFinalReports();
+      }
+    });
+
+    // أول رسم للجداول عند فتح الصفحة
+    renderCases();
+    renderPlans();
+    renderMonthlyReports();
+    renderFinalReports();
+  </script>
+</body>
+</html>
